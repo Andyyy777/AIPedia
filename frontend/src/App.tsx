@@ -1,24 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import LanguageSelect from './components/LanguageSelect';
+import ResponseArea from './components/ResponseArea';
+import Typography from '@mui/material/Typography';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Typography variant="h5" gutterBottom>
+        AIPedia
+      </Typography>
+      <LanguageSelect/>
+      <ResponseArea/>
     </div>
   );
 }
