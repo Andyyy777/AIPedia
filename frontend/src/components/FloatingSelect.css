@@ -1,0 +1,8 @@
+.FloatingSelect {
+    position: fixed;
+    /* bottom: 5%; */
+    top: 5%;
+    /* right: 5%; */
+    left: 2%;
+    z-index: 999;
+}

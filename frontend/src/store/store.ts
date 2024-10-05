@@ -24,3 +24,38 @@ export const useAIPediaStore = create<AIPediaState>()(
     },
   ),
 )
+
+interface ImageStore {
+  selectedImage: string | null;
+  setSelectedImage:(imageUrl: string | null) => void;
+}
+
+export const useImageStore = create<ImageStore>()(
+  persist((set) => ({
+  selectedImage: null,
+  setSelectedImage: (imageUrl)=>{
+      set({selectedImage: imageUrl})
+  }
+  }),
+{
+  name: 'aipedia-storage',
+},));
+
+interface AnchorStore {
+  anchor: HTMLElement | null;
+  selectedOption: string | null;
+  setAnchor: (anchor: HTMLElement | null) => void;
+  setSelectedOption: (selectedOption: string | null) => void;
+}
+
+export const useAnchorStore = create<AnchorStore>()((set) => ({
+    anchor: null,
+    selectedOption: null,
+    setAnchor: (anchor) => {
+      set({ anchor: anchor });
+    },
+    setSelectedOption: (selectedOption) => {
+      set({ selectedOption: selectedOption });
+    },
+  })
+);
