@@ -5,7 +5,7 @@ import LanguageSelect from './components/LanguageSelect';
 import ResponseArea from './components/ResponseArea';
 import Typography from '@mui/material/Typography';
 import FloatingSelect from './components/FloatingSelect';
-import TextInput from './components/TextInput';
+import GPTComponent from './LLMs/GPTComponent';
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
       <ImageUploader />
       <ResponseArea/>
       <FloatingSelect/>
-      <TextInput />
+      <GPTComponent/>
     </div>
     
   );

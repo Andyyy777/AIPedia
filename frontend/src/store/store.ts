@@ -59,3 +59,26 @@ export const useAnchorStore = create<AnchorStore>()((set) => ({
     },
   })
 );
+
+interface GPTStore {
+  inputText: string;
+  responseText: string;
+  setInputText: (inputText: string) => void;
+  setResponseText: (responseText: string) => void;
+}
+
+export const useGPTStore = create<GPTStore>()(
+  persist(((set) => ({
+  inputText: '',
+  responseText: '',
+  setInputText: (inputText) => {
+    set({ inputText });
+  },
+  setResponseText: (responseText) => {
+    set({ responseText });
+  },
+})
+  ),
+  {
+    name: 'aipedia-storage',
+  },));
