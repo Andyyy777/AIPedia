@@ -26,14 +26,20 @@ export const useAIPediaStore = create<AIPediaState>()(
 );
 
 interface ImageStore {
+  firstUploaded:boolean;
   selectedImage: string | null;
+  setFirstUploaded: (firstUploaded: boolean) => void;
   setSelectedImage: (imageUrl: string | null) => void;
 }
 
 export const useImageStore = create<ImageStore>()(
   persist(
     (set) => ({
+      firstUploaded:false,
       selectedImage: null,
+      setFirstUploaded: (firstUploaded) => {
+        set({ firstUploaded: firstUploaded });
+      },
       setSelectedImage: (imageUrl) => {
         set({ selectedImage: imageUrl });
       },

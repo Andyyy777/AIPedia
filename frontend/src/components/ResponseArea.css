@@ -1,3 +1,9 @@
 .ResponseArea {
-  padding: 15% 0;
+  padding: 2% 0;
+}
+
+.content {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
 }

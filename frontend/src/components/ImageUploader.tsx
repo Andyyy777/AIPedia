@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Card, CardContent, Typography, Box } from "@mui/material";
 import { useImageStore } from "../store/store";
 import { useShallow } from "zustand/shallow";
+import { set } from "zod";
 
 const ImageUploader = () => {
   const selectedImage = useImageStore(
@@ -9,6 +10,10 @@ const ImageUploader = () => {
   );
   const setSelectedImage = useImageStore(
     useShallow((state) => state.setSelectedImage)
+  );
+
+  const [firstUploaded, setFirstUploaded] = useImageStore(
+    useShallow((state) => [state.firstUploaded, state.setFirstUploaded])
   );
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,10 +32,12 @@ const ImageUploader = () => {
   const handleButtonClick = () => {
     const fileInput = document.getElementById("image-upload-input");
     fileInput?.click();
+    setFirstUploaded(true);
   };
 
   const clearImage = () => {
     setSelectedImage(null);
+    setFirstUploaded(false);
   };
 
   return (

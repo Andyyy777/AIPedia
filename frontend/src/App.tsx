@@ -10,7 +10,7 @@ import GPTComponent from './LLMs/GPTComponent';
 function App() {
   return (
     <div className="App">
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5">
         AIPedia
       </Typography>
       <LanguageSelect/>
