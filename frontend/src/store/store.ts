@@ -4,8 +4,10 @@ import { persist } from "zustand/middleware";
 interface AIPediaState {
   language: string | null;
   response: string | null;
+  userStatus: string | null;
   updateLanguage: (language: string | null) => void;
   updateResponse: (response: string | null) => void;
+  updateUserStatus: (userStatus: string | null) => void;
 }
 
 export const useAIPediaStore = create<AIPediaState>()(
@@ -16,8 +18,10 @@ export const useAIPediaStore = create<AIPediaState>()(
       blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur,
       neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum
       quasi quidem quibusdam.`,
+      userStatus: "",
       updateLanguage: (newLanguage) => set(() => ({ language: newLanguage })),
       updateResponse: (newResponse) => set(() => ({ response: newResponse })),
+      updateUserStatus: (newUserStatus) => set(() => ({ userStatus: newUserStatus })),
     }),
     {
       name: "aipedia-storage",
