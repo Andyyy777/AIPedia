@@ -3,6 +3,7 @@ import { useShallow } from "zustand/shallow";
 import { Box, Button, TextField, useAutocomplete } from "@mui/material";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
+import { useEffect } from "react";
 
 // just a template to refine the output format
 const OutPutStructure = z.object({
@@ -19,6 +20,13 @@ const OutPutStructure = z.object({
   }),
 });
 
+const UserStatusStructure = z.object({
+  time_available: z.string(),
+  travel_speed: z.string(),
+  trajectory: z.string(),
+  word_count: z.string(),
+});
+
 function GPTComponent() {
   const [inputText, setInputText] = useGPTStore(
     useShallow((state) => [state.inputText, state.setInputText])
@@ -28,6 +36,10 @@ function GPTComponent() {
     useShallow((state) => [state.response, state.updateResponse])
   );
 
+  const [userStatus, updateUserStatus] = useAIPediaStore(
+    useShallow((state) => [state.userStatus, state.updateUserStatus])
+  );
+
   const [firstUploaded, setFirstUploaded] = useImageStore(
     useShallow((state) => [state.firstUploaded, state.setFirstUploaded])
   );
@@ -35,6 +47,75 @@ function GPTComponent() {
   const selectedImage = useImageStore((state) => state.selectedImage);
   let inputContent = "";
   console.log("firstUploaded", firstUploaded);
+
+  const userContext = {
+    time_availale: "30 sec", 
+    travel_speed: "2 m/s", 
+    trajectory: "walking from union station to CN tower"
+  }
+
+  const callUserContextAPI = async () => {
+    console.log(userContext)
+    inputContent = `
+      Given the user’s context: available time: ${userContext.time_availale}, travel speed: ${userContext.travel_speed}, trajectory: ${userContext.trajectory}
+      Categorize their current status for each of the following factors:
+        1. Time Available
+        - Limited (e.g., 30 seconds or less)
+        - Moderate (e.g., about 1 minute)
+        - Extended (e.g., 2 minutes or more)
+        2. Travel Speed (range 0.5 - 2 m/s)
+        - Slow Walking
+        - Moderate Walking
+        - Fast Walking
+        3. Trajectory
+        - Approaching a Specific Spot
+        - Near a Spot
+        - Passing By
+      Use the available data to categorize the user’s context into one of these three categories for each factor. 
+      Then determine the appropriate word count for a scenery summary. 
+      Only report the category and word count in the following JSON format: 
+      {
+        “time_available”: “time available options”, 
+        “travel_speed”: “travel speed options”, 
+        “trajectory”: “trajectory options”, 
+        “word_count”: “range of word count suggested”
+      }
+    `
+    const apiKey = process.env.REACT_APP_GPT_API;
+    const OpenAI = require("openai");
+
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      dangerouslyAllowBrowser: true,
+    });
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: [
+              { type: "text", text: inputContent }
+            ],
+          },
+        ],
+        response_format: zodResponseFormat(UserStatusStructure, "event"),
+      });
+      const data = response;
+      let responseContent = data.choices[0]?.message?.content || "{}";
+      let parsedData;
+      try {
+        parsedData = JSON.parse(responseContent);
+        updateUserStatus(JSON.stringify(parsedData, null, 2));
+      } catch (error) {
+        console.error("Failed to parse JSON response:", error);
+        updateUserStatus(responseContent);
+      }
+    } catch (error) {
+      console.error("Error calling GPT API:", error);
+      updateUserStatus("Error generating response");
+    }
+  }
 
   const callGPTAPI = async () => {
     if (firstUploaded) {
@@ -140,6 +221,11 @@ function GPTComponent() {
       updateResponse("Error generating response");
     }
   };
+
+  useEffect(() => {
+    callUserContextAPI()
+    console.log(userStatus)
+  }, [])
 
   return (
     <Box
