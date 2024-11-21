@@ -2,6 +2,7 @@ import React from 'react';
 import { useAIPediaStore } from '../store/store';
 import { useShallow } from 'zustand/react/shallow'
 import Typography from '@mui/material/Typography';
+import { Card, CardContent } from "@mui/material";
 import "./ResponseArea.css"
 import { parse } from 'path';
 
@@ -13,6 +14,8 @@ function ResponseArea() {
     const parsedData = JSON.parse(response!);
     return (
       <div className='ResponseArea'>
+        <Card className="response-card" sx={{ maxWidth: 600, margin: "20px auto", padding: 2, boxShadow: 3 }}>
+        <CardContent>
         <Typography variant="h5" gutterBottom>
           <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '10px' }}>
             <h4>Description</h4>
@@ -43,15 +46,22 @@ function ResponseArea() {
             <p className="content"><strong>Ambiance:</strong> {parsedData.practical_information.ambiance}</p>
           </div>
         </Typography>
+        </CardContent>
+        </Card>
       </div>
     );
   }
   catch(e){
     return (
       <div className='ResponseArea'>
-        <Typography variant="h5" gutterBottom>
-          {response}
-        </Typography>
+        <Card className="response-card" sx={{ maxWidth: 600, margin: "20px auto", padding: 2, boxShadow: 3 }}>
+          <CardContent>
+            <div
+              className="response-content"
+              dangerouslySetInnerHTML={{ __html: response! }}
+            />
+          </CardContent>
+        </Card>
       </div>
     )
   }

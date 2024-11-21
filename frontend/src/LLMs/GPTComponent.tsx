@@ -44,14 +44,84 @@ function GPTComponent() {
     useShallow((state) => [state.firstUploaded, state.setFirstUploaded])
   );
 
+  const [language, updateLanguage] = useAIPediaStore(
+    useShallow((state) => [state.language, state.updateLanguage])
+  );
+
   const selectedImage = useImageStore((state) => state.selectedImage);
   let inputContent = "";
   console.log("firstUploaded", firstUploaded);
-
-  const userContext = {
+  const user_context_pool = [{
     time_availale: "30 sec", 
     travel_speed: "2 m/s", 
     trajectory: "walking from union station to CN tower"
+  }, {
+    time_availale: "1 min", 
+    travel_speed: "1 m/s", 
+    trajectory: "near CN tower"
+  }, {
+    time_availale: "2 min", 
+    travel_speed: "0.5 m/s", 
+    trajectory: "passing by CN tower"
+  }]
+
+  let index = Math.floor(Math.random() * user_context_pool.length)
+  const userContext = user_context_pool[index]
+  
+  interface SectionFormat {
+    type: string,
+    title?: string;
+    content: string,
+  }
+
+  const autoParseAndFormat = (inputText:string) =>  {
+    const cleanedText = inputText.replace(/```json[\s\S]*?```/, "").trim();
+  
+    const formattedContent: { sections: SectionFormat[] } = {
+      sections: [],
+    };
+  
+    const lines = cleanedText.split("\n");
+  
+    lines.forEach((line) => {
+      
+      const boldMatch = line.match(/\*\*(.*?)\*\*/);
+      if (boldMatch) {
+        const title = boldMatch[1];
+        const description = line.replace(/\*\*(.*?)\*\*/, "").trim();
+        formattedContent.sections.push({
+          type: "highlight",
+          title: title,
+          content: description,
+        });
+      } else {
+        
+        if (line.trim()) {
+          formattedContent.sections.push({
+            type: "text",
+            content: line.trim(),
+          });
+        }
+      }
+    });
+    const htmlOutput = renderHTML(formattedContent);
+    console.log(htmlOutput);
+    return htmlOutput;
+  };
+  
+  const renderHTML = (parsedContent: { sections: SectionFormat[] }): string =>{
+    return parsedContent.sections
+      .map((section) => {
+        if (section.type === "highlight" && section.title) {
+          section.content = section.content.replace(/\d+\.\s*：/g, "");
+          return `<strong>${section.title}</strong>: ${section.content} <br/>
+          <br/>`;
+        } else {
+          return `<p>${section.content}</p>
+          <br/>`;
+        }
+      })
+      .join("\n");
   }
 
   const callUserContextAPI = async () => {
@@ -118,12 +188,13 @@ function GPTComponent() {
   }
 
   const callGPTAPI = async () => {
+    await callUserContextAPI();
+    const parsed_status = JSON.parse(userStatus || "{}");
     if (firstUploaded) {
       console.log("firstUploaded");
-      inputContent = `Please analyze the uploaded image and generate a tourism introduction in the following JSON format, 
-      please control the total length between 100 to 200 words:
+      inputContent = `Please analyze the uploaded image and generate a tourism introduction in the following JSON format in ${language}:
       {
-        "description": "A short description (within 100 words) highlighting key features, natural beauty, and cultural significance.",
+        "description": "A short description highlighting key features, natural beauty, and cultural significance.",
         "historical_facts": "A few key historical facts about the place.",
         "nearby_attractions": [
           "Attraction 1",
@@ -152,7 +223,7 @@ function GPTComponent() {
 
     if (inputText) {
       inputContent +=
-        "User also provide some questions they interested. Please answer the following questions from user as well(please control the answer within 50 words):" +
+        `User also provide some questions they interested. Please answer the following questions from user in ${language} as well:` +
         inputText;
     }
     const apiKey = process.env.REACT_APP_GPT_API;
@@ -162,10 +233,22 @@ function GPTComponent() {
       apiKey: apiKey,
       dangerouslyAllowBrowser: true,
     });
+    // let parsed_status = JSON.parse(userStatus!);
+    console.log("status", parsed_status)
+    let context_condition = `Given the user’s context: available time: ${parsed_status.time_available}, travel speed: ${parsed_status.travel_speed}, trajectory: ${parsed_status.trajectory}
+    please generate a tourism introduction based on the uploaded image and user's questions within ${parsed_status.word_count} words in ${language}.`
+
+    console.log(context_condition)
     try {
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
+          {
+            role: "system",
+            content:[{
+              type: "text", text: context_condition
+            }],
+          },
           {
             role: "user",
             content: [
@@ -213,6 +296,8 @@ function GPTComponent() {
         updateResponse(JSON.stringify(parsedData, null, 2));
         setFirstUploaded(false);
       } catch (error) {
+        responseContent = responseContent.replace(/```json[\s\S]*?```/, "").trim();
+        responseContent = autoParseAndFormat(responseContent);
         console.error("Failed to parse JSON response:", error);
         updateResponse(responseContent);
       }
@@ -222,10 +307,12 @@ function GPTComponent() {
     }
   };
 
-  useEffect(() => {
-    callUserContextAPI()
-    console.log(userStatus)
-  }, [])
+  // useEffect(() => {
+  //   (async () => {
+  //     await callUserContextAPI();
+  //     console.log(userStatus);
+  //   })();
+  // }, [])
 
   return (
     <Box
