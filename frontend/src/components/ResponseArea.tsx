@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAIPediaStore } from '../store/store';
+import { useAIPediaStore, useGPTStore } from '../store/store';
 import { useShallow } from 'zustand/react/shallow'
 import Typography from '@mui/material/Typography';
 import { Card, CardContent } from "@mui/material";
@@ -10,6 +10,10 @@ function ResponseArea() {
   const [response] = useAIPediaStore(
     useShallow((state) => [state.response])
   )
+
+  const [inputText] = useGPTStore(
+    useShallow((state) => [state.inputText])
+  );
   try{
     const parsedData = JSON.parse(response!);
     return (
@@ -44,6 +48,7 @@ function ResponseArea() {
             <p className="content"><strong>Ticket Price:</strong> {parsedData.practical_information.ticket_price}</p>
             <p className="content"><strong>Opening Hours:</strong> {parsedData.practical_information.opening_hours}</p>
             <p className="content"><strong>Ambiance:</strong> {parsedData.practical_information.ambiance}</p>
+            {inputText !== ""? <div><h4>Your Question</h4> <p className="content"> {parsedData.user_question_answer}</p></div>: null}
           </div>
         </Typography>
         </CardContent>

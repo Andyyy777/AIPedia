@@ -1,4 +1,4 @@
-import { useAIPediaStore, useGPTStore, useImageStore } from "../store/store";
+import { useAIPediaStore, useGPTStore, useImageStore, useAnchorStore } from "../store/store";
 import { useShallow } from "zustand/shallow";
 import { Box, Button, TextField, useAutocomplete } from "@mui/material";
 import { zodResponseFormat } from "openai/helpers/zod";
@@ -18,6 +18,7 @@ const OutPutStructure = z.object({
     opening_hours: z.string(),
     ambiance: z.string(),
   }),
+  user_question_answer: z.string() || null,
 });
 
 const UserStatusStructure = z.object({
@@ -46,6 +47,10 @@ function GPTComponent() {
 
   const [language, updateLanguage] = useAIPediaStore(
     useShallow((state) => [state.language, state.updateLanguage])
+  );
+
+  const [selectedOption, setSelectedOption] = useAnchorStore(
+    useShallow((state) => [state.selectedOption, state.setSelectedOption])
   );
 
   const selectedImage = useImageStore((state) => state.selectedImage);
@@ -293,6 +298,7 @@ function GPTComponent() {
       let parsedData;
       try {
         parsedData = JSON.parse(responseContent);
+        console.log(parsedData);
         updateResponse(JSON.stringify(parsedData, null, 2));
         setFirstUploaded(false);
       } catch (error) {
@@ -307,13 +313,11 @@ function GPTComponent() {
     }
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     await callUserContextAPI();
-  //     console.log(userStatus);
-  //   })();
-  // }, [])
+  useEffect(() => {
+    setFirstUploaded(true);
+  }, [])
 
+  console.log("selectedOption", selectedOption);
   return (
     <Box
       sx={{
@@ -335,6 +339,8 @@ function GPTComponent() {
         sx={{
           width: "80%",
         }}
+        // disable it when selectedOption is "Image only"
+        disabled={selectedOption === "Image only"}
       />
       <Button
         onClick={callGPTAPI}
@@ -343,6 +349,7 @@ function GPTComponent() {
           width: "10%",
           marginLeft: 2,
         }}
+        disabled={selectedOption === "Image only"}
       >
         Submit
       </Button>

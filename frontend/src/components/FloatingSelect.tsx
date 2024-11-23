@@ -70,10 +70,10 @@ const FloatingSelect = () => {
           <FileCopyIcon sx={{ paddingRight: "5px" }} />
           Image + Text
         </MenuItem>
-        <MenuItem onClick={handleCloseOption} disableRipple>
+        {/* <MenuItem onClick={handleCloseOption} disableRipple>
           <SpatialAudioOffIcon sx={{ paddingRight: "5px" }} />
           Image + Text + Audio
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </div>
   );
