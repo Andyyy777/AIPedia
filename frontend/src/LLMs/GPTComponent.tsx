@@ -1,8 +1,8 @@
-import { useAIPediaStore, useGPTStore, useImageStore, useAnchorStore } from "../store/store";
+import { useAIPediaStore, useGPTStore, useImageStore, useAnchorStore, useContextStore } from "../store/store";
 import { useShallow } from "zustand/shallow";
 import { Box, Button, TextField, useAutocomplete } from "@mui/material";
 import { zodResponseFormat } from "openai/helpers/zod";
-import { z } from "zod";
+import { set, z } from "zod";
 import { useEffect } from "react";
 
 // just a template to refine the output format
@@ -41,6 +41,10 @@ function GPTComponent() {
     useShallow((state) => [state.userStatus, state.updateUserStatus])
   );
 
+  const [context, setContext] = useContextStore(
+    useShallow((state) => [state.context, state.setContext])
+);
+
   const [firstUploaded, setFirstUploaded] = useImageStore(
     useShallow((state) => [state.firstUploaded, state.setFirstUploaded])
   );
@@ -71,7 +75,8 @@ function GPTComponent() {
   }]
 
   let index = Math.floor(Math.random() * user_context_pool.length)
-  const userContext = user_context_pool[index]
+  console.log("context", context);
+  const userContext = !context? user_context_pool[index]: JSON.parse(context);
   
   interface SectionFormat {
     type: string,
@@ -315,9 +320,9 @@ function GPTComponent() {
 
   useEffect(() => {
     setFirstUploaded(true);
+    setContext(null);
   }, [])
 
-  console.log("selectedOption", selectedOption);
   return (
     <Box
       sx={{
@@ -327,6 +332,7 @@ function GPTComponent() {
         justifyContent: "center",
         width: "100%",
         padding: 1,
+        marginBottom: 2,
       }}
     >
       <TextField

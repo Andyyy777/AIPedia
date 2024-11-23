@@ -6,6 +6,7 @@ import ResponseArea from './components/ResponseArea';
 import Typography from '@mui/material/Typography';
 import FloatingSelect from './components/FloatingSelect';
 import GPTComponent from './LLMs/GPTComponent';
+import ContextSelector from './components/ContextSelector';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <ImageUploader />
       <ResponseArea/>
       <FloatingSelect/>
+      <ContextSelector/>
       <GPTComponent/>
     </div>
     

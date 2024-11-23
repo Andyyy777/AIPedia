@@ -97,3 +97,22 @@ export const useGPTStore = create<GPTStore>()(
     }
   )
 );
+
+interface ContextStore {
+  context: string | null;
+  setContext: (inputText: string | null) => void;
+}
+
+export const useContextStore = create<ContextStore>()(
+  persist(
+    (set) => ({
+      context: null,
+      setContext: (context) => {
+        set({ context });
+      }
+    }),
+    {
+      name: "aipedia-storage",
+    }
+  )
+);
