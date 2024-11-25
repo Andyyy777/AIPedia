@@ -14,8 +14,8 @@ const ContextSelector = () => {
         trajectory: "walking from union station to CN tower"
       }, {
         time_availale: "1 minute", 
-        travel_speed: "1 m/s", 
-        trajectory: "near CN tower"
+        travel_speed: "15 m/s", 
+        trajectory: "driving by CN tower"
       }, {
         time_availale: "10 minutes", 
         travel_speed: "0.5 m/s", 

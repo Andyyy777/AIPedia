@@ -160,9 +160,9 @@ function GPTComponent() {
     - Driving (> 5 m/s): Reduce by 80%
 
     3. Trajectory Impact:
-    - Near a Spot: Keep original word count
-    - Approaching a Specific Spot: Reduce by 10%
-    - Passing By: Reduce by 30%
+    - Standing Besides: Keep original word count
+    - Walking by: Reduce by 10%
+    - Driving By: Reduce by 30%
 
     Calculate the final word count by, let's think it step by step:
     1. Start with base word count from Time Available
