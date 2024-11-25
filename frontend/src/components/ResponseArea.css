@@ -7,3 +7,9 @@
   font-weight: 500;
   color: #333;
 }
+
+.loading-card {
+  min-width: 100px;
+  opacity: 0.8;
+  animation: pulse 1.5s infinite;
+}
