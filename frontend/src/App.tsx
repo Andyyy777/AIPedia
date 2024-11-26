@@ -6,6 +6,8 @@ import ResponseArea from './components/ResponseArea';
 import Typography from '@mui/material/Typography';
 import FloatingSelect from './components/FloatingSelect';
 import GPTComponent from './LLMs/GPTComponent';
+import ContextSelector from './components/ContextSelector';
+// import Conversation from './components/Conversation';
 
 function App() {
   return (
@@ -15,8 +17,10 @@ function App() {
       </Typography>
       <LanguageSelect/>
       <ImageUploader />
-      <ResponseArea/>
+      <ResponseArea/> 
+      {/* <Conversation/> */}
       <FloatingSelect/>
+      <ContextSelector/>
       <GPTComponent/>
     </div>
     

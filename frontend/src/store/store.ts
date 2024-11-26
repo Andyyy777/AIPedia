@@ -14,10 +14,7 @@ export const useAIPediaStore = create<AIPediaState>()(
   persist(
     (set) => ({
       language: "",
-      response: `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
-      blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur,
-      neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum
-      quasi quidem quibusdam.`,
+      response: ``,
       userStatus: "",
       updateLanguage: (newLanguage) => set(() => ({ language: newLanguage })),
       updateResponse: (newResponse) => set(() => ({ response: newResponse })),
@@ -75,8 +72,10 @@ export const useAnchorStore = create<AnchorStore>()((set) => ({
 interface GPTStore {
   inputText: string;
   responseText: string;
+  isProcessing: boolean;
   setInputText: (inputText: string) => void;
   setResponseText: (responseText: string) => void;
+  setIsProcessing: (isProcessing: boolean) => void;
 }
 
 // maybe no need for persist but will decide later
@@ -85,12 +84,57 @@ export const useGPTStore = create<GPTStore>()(
     (set) => ({
       inputText: "",
       responseText: "",
+      isProcessing: false,
       setInputText: (inputText) => {
         set({ inputText });
       },
       setResponseText: (responseText) => {
         set({ responseText });
       },
+      setIsProcessing: (isProcessing) => set(() => ({ isProcessing })),
+    }),
+    {
+      name: "aipedia-storage",
+    }
+  )
+);
+
+interface ContextStore {
+  context: string | null;
+  setContext: (inputText: string | null) => void;
+}
+
+export const useContextStore = create<ContextStore>()(
+  persist(
+    (set) => ({
+      context: null,
+      setContext: (context) => {
+        set({ context });
+      }
+    }),
+    {
+      name: "aipedia-storage",
+    }
+  )
+);
+
+export type ConversationMessage = {
+  speaker: string;
+  text: string;
+};
+
+interface ConversationStore {
+  conversation: ConversationMessage[];
+  setConversation: (conversation: ConversationMessage[]) => void;
+}
+
+export const useConversationStore = create<ConversationStore>()(
+  persist(
+    (set) => ({
+      conversation: [],
+      setConversation: (conversation) => {
+        set({ conversation });
+      }
     }),
     {
       name: "aipedia-storage",
