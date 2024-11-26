@@ -244,9 +244,9 @@ function GPTComponent() {
     if (firstUploaded) {
       // console.log("firstUploaded");
       inputContent = `Please analyze the uploaded image and generate a tourism introduction in the following JSON format in ${language}. 
-      Please strictly follow the word count limit ${parsed_status.word_count} words, 
+      Please strictly follow the word count limit ${context ? parsed_status.word_count: `500`} words, 
       "nearby places to eat and corresponding average price", "nearby attractions" and "practical_information" 
-      could be ignored if adding them will exceed the word limit ${parsed_status.word_count}.
+      could be ignored if adding them will exceed the word limit ${context ? parsed_status.word_count: `500`}.
       `;
     }
     console.log('input text:', currentInput)
@@ -265,7 +265,7 @@ function GPTComponent() {
     // let parsed_status = JSON.parse(userStatus!);
     // console.log("status", parsed_status)
     let context_condition = `Given the user’s context: available time: ${parsed_status.time_available}, travel speed: ${parsed_status.travel_speed}, trajectory: ${parsed_status.trajectory}
-    please generate a tourism introduction based on the uploaded image and user's questions within ${parsed_status.word_count} words in ${language}.`
+    please generate a tourism introduction based on the uploaded image and user's questions within ${context ? parsed_status.word_count: `500`} words in ${language}.`
 
     console.log(inputContent)
     try {
