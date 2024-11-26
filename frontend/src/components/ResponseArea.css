@@ -1,5 +1,7 @@
 .ResponseArea {
   padding: 2% 0;
+  min-height: auto;
+  min-width: 400px;
 }
 
 .content {
