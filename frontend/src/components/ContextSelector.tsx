@@ -9,17 +9,17 @@ const ContextSelector = () => {
         useShallow((state) => [state.context, state.setContext])
     );
     const user_context_pool = [{
-        time_availale: "10 seconds", 
-        travel_speed: "2.5 m/s", 
-        trajectory: "walking from union station to CN tower"
-      }, {
         time_availale: "1 minute", 
+        travel_speed: "1.2 m/s", 
+        trajectory: "passing by the attraction"
+      }, {
+        time_availale: "10 seconds", 
         travel_speed: "15 m/s", 
-        trajectory: "driving by CN tower"
+        trajectory: "driving by the attraction"
       }, {
         time_availale: "10 minutes", 
         travel_speed: "0.5 m/s", 
-        trajectory: "passing by CN tower"
+        trajectory: "walking towards the attraction"
       }]
 
     function onSelectContext(context: { time_availale: string; travel_speed: string; trajectory: string; }): void {

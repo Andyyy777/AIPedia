@@ -67,17 +67,17 @@ function GPTComponent() {
   let inputContent = "";
   console.log("firstUploaded", firstUploaded);
   const user_context_pool = [{
-    time_availale: "10 sec", 
-    travel_speed: "2 m/s", 
-    trajectory: "walking from union station to CN tower"
+    time_availale: "1 minute", 
+    travel_speed: "1.2 m/s", 
+    trajectory: "passing by the attraction"
   }, {
-    time_availale: "1 min", 
-    travel_speed: "1 m/s", 
-    trajectory: "near CN tower"
+    time_availale: "10 seconds", 
+    travel_speed: "15 m/s", 
+    trajectory: "driving by the attraction"
   }, {
-    time_availale: "2 min", 
+    time_availale: "10 minutes", 
     travel_speed: "0.5 m/s", 
-    trajectory: "passing by CN tower"
+    trajectory: "walking towards the attraction"
   }]
 
   let index = Math.floor(Math.random() * user_context_pool.length)
