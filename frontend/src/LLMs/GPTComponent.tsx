@@ -244,11 +244,11 @@ function GPTComponent() {
     if (firstUploaded) {
       // console.log("firstUploaded");
       inputContent = `Please analyze the uploaded image and generate a tourism introduction in the following JSON format in ${language}. 
-      Please strictly follow the word count limit ${parsed_status.word_count} words, let's think it step by step:
+      Please strictly follow the word count limit ${context ? parsed_status.word_count: `500`} words, let's think it step by step:
       1. Start with estimated the word count for each component
       2. Based on the word count limit, which components are necessary to include in the response?
       "nearby places to eat and corresponding average price", "nearby attractions" and "practical_information" 
-      could be ignored if adding them will exceed the word limit ${parsed_status.word_count}.
+      could be ignored if adding them will exceed the word limit ${context ? parsed_status.word_count: `500`}.
       3. Only include the necessary components in the response.
       4. Ensure the JSON is valid and follows the structure provided.
       `;
